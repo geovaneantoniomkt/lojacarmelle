@@ -10,5 +10,6 @@ export default registerAs(
     migrations: [__dirname + '/../../migrations/*{.ts,.js}'],
     synchronize: false,
     logging: process.env.NODE_ENV === 'development',
+    extra: { family: 4 },
   }),
 );
