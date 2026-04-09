@@ -33,25 +33,26 @@ export function ClientesLista() {
   });
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 md:p-6">
+      <div className="flex items-center justify-between mb-4 md:mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Clientes</h1>
+          <h1 className="text-xl md:text-2xl font-bold">Clientes</h1>
           <p className="text-muted-foreground text-sm mt-1">
             {data?.total ?? 0} clientes cadastradas
           </p>
         </div>
         <Link
           to="/clientes/novo"
-          className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
+          className="flex items-center gap-2 bg-primary text-primary-foreground px-3 py-2 md:px-4 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
         >
           <Plus size={16} />
-          Nova Cliente
+          <span className="hidden sm:inline">Nova Cliente</span>
+          <span className="sm:hidden">Nova</span>
         </Link>
       </div>
 
       <div className="bg-white rounded-xl border border-border shadow-sm">
-        <div className="p-4 border-b border-border">
+        <div className="p-3 md:p-4 border-b border-border">
           <div className="relative">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
@@ -71,42 +72,69 @@ export function ClientesLista() {
             <p className="text-muted-foreground text-sm">Nenhuma cliente encontrada</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border text-left text-muted-foreground">
-                <th className="px-4 py-3 font-medium">Nome</th>
-                <th className="px-4 py-3 font-medium">Telefone</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium">Total gasto</th>
-                <th className="px-4 py-3 font-medium">Última compra</th>
-              </tr>
-            </thead>
-            <tbody>
+          <>
+            {/* Tabela desktop */}
+            <table className="hidden md:table w-full text-sm">
+              <thead>
+                <tr className="border-b border-border text-left text-muted-foreground">
+                  <th className="px-4 py-3 font-medium">Nome</th>
+                  <th className="px-4 py-3 font-medium">Telefone</th>
+                  <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3 font-medium">Total gasto</th>
+                  <th className="px-4 py-3 font-medium">Última compra</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data?.data?.map((c: any) => (
+                  <tr key={c.id} className="border-b border-border last:border-0 hover:bg-muted/30">
+                    <td className="px-4 py-3">
+                      <Link to={`/clientes/${c.id}`} className="font-medium hover:text-primary">
+                        {c.nomeCompleto}
+                      </Link>
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">{c.telefone ?? '—'}</td>
+                    <td className="px-4 py-3">
+                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${STATUS_COLORS[c.statusCrm]}`}>
+                        {STATUS_LABELS[c.statusCrm]}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      R$ {Number(c.totalGasto).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {c.ultimaCompraEm
+                        ? new Date(c.ultimaCompraEm).toLocaleDateString('pt-BR')
+                        : '—'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Cards mobile */}
+            <div className="md:hidden divide-y divide-border">
               {data?.data?.map((c: any) => (
-                <tr key={c.id} className="border-b border-border last:border-0 hover:bg-muted/30">
-                  <td className="px-4 py-3">
-                    <Link to={`/clientes/${c.id}`} className="font-medium hover:text-primary">
-                      {c.nomeCompleto}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground">{c.telefone ?? '—'}</td>
-                  <td className="px-4 py-3">
-                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${STATUS_COLORS[c.statusCrm]}`}>
+                <Link
+                  key={c.id}
+                  to={`/clientes/${c.id}`}
+                  className="flex items-center justify-between px-4 py-3 hover:bg-muted/30 active:bg-muted/50"
+                >
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm truncate">{c.nomeCompleto}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{c.telefone ?? 'Sem telefone'}</p>
+                  </div>
+                  <div className="flex flex-col items-end gap-1 ml-3 shrink-0">
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[c.statusCrm]}`}>
                       {STATUS_LABELS[c.statusCrm]}
                     </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    R$ {Number(c.totalGasto).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground">
-                    {c.ultimaCompraEm
-                      ? new Date(c.ultimaCompraEm).toLocaleDateString('pt-BR')
-                      : '—'}
-                  </td>
-                </tr>
+                    <span className="text-xs text-muted-foreground">
+                      R$ {Number(c.totalGasto).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </span>
+                  </div>
+                </Link>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </>
         )}
 
         {data?.totalPages > 1 && (

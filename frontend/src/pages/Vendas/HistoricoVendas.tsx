@@ -32,32 +32,33 @@ export function HistoricoVendas() {
   const totalReceita = data?.data?.reduce((acc: number, v: any) => acc + Number(v.valorFinal), 0) ?? 0;
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 md:p-6">
+      <div className="flex items-center justify-between mb-4 md:mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Vendas</h1>
+          <h1 className="text-xl md:text-2xl font-bold">Vendas</h1>
           <p className="text-muted-foreground text-sm mt-1">
             {data?.total ?? 0} vendas registradas
           </p>
         </div>
         <Link
           to="/vendas/nova"
-          className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
+          className="flex items-center gap-2 bg-primary text-primary-foreground px-3 py-2 md:px-4 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
         >
           <Plus size={16} />
-          Nova Venda
+          <span className="hidden sm:inline">Nova Venda</span>
+          <span className="sm:hidden">Nova</span>
         </Link>
       </div>
 
       {/* Filtros + resumo */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-6">
         <div className="bg-white rounded-xl border border-border shadow-sm p-4">
           <p className="text-xs text-muted-foreground">Receita do período</p>
           <p className="text-xl font-bold mt-1">
             R$ {totalReceita.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </p>
         </div>
-        <div className="flex items-end gap-2">
+        <div className="flex items-end gap-2 md:col-span-2">
           <div className="flex-1">
             <label className="block text-xs text-muted-foreground mb-1">De</label>
             <input
@@ -88,56 +89,76 @@ export function HistoricoVendas() {
             <p className="text-muted-foreground text-sm">Nenhuma venda encontrada</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border text-left text-muted-foreground">
-                <th className="px-4 py-3 font-medium">Data</th>
-                <th className="px-4 py-3 font-medium">Cliente</th>
-                <th className="px-4 py-3 font-medium">Itens</th>
-                <th className="px-4 py-3 font-medium">Pagamento</th>
-                <th className="px-4 py-3 font-medium">Desconto</th>
-                <th className="px-4 py-3 font-medium">Total</th>
-                <th className="px-4 py-3 font-medium">Pontos</th>
-              </tr>
-            </thead>
-            <tbody>
+          <>
+            {/* Tabela desktop */}
+            <table className="hidden md:table w-full text-sm">
+              <thead>
+                <tr className="border-b border-border text-left text-muted-foreground">
+                  <th className="px-4 py-3 font-medium">Data</th>
+                  <th className="px-4 py-3 font-medium">Cliente</th>
+                  <th className="px-4 py-3 font-medium">Itens</th>
+                  <th className="px-4 py-3 font-medium">Pagamento</th>
+                  <th className="px-4 py-3 font-medium">Desconto</th>
+                  <th className="px-4 py-3 font-medium">Total</th>
+                  <th className="px-4 py-3 font-medium">Pontos</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data?.data?.map((v: any) => (
+                  <tr key={v.id} className="border-b border-border last:border-0 hover:bg-muted/30">
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      {new Date(v.dataVenda).toLocaleDateString('pt-BR')}
+                    </td>
+                    <td className="px-4 py-3">
+                      <Link to={`/clientes/${v.clienteId}`} className="font-medium hover:text-primary">
+                        {v.cliente?.nomeCompleto ?? '—'}
+                      </Link>
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">{v.itens?.length ?? 0} item(s)</td>
+                    <td className="px-4 py-3">
+                      <span className="bg-muted text-xs px-2 py-0.5 rounded">
+                        {PAGAMENTO_LABELS[v.formaPagamento]}
+                        {v.parcelas > 1 && ` ${v.parcelas}x`}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-green-600">
+                      {Number(v.valorDesconto) > 0 ? `- R$ ${Number(v.valorDesconto).toFixed(2)}` : '—'}
+                    </td>
+                    <td className="px-4 py-3 font-medium">
+                      R$ {Number(v.valorFinal).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </td>
+                    <td className="px-4 py-3 text-primary font-medium">+{v.pontosGerados}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Cards mobile */}
+            <div className="md:hidden divide-y divide-border">
               {data?.data?.map((v: any) => (
-                <tr key={v.id} className="border-b border-border last:border-0 hover:bg-muted/30">
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    {new Date(v.dataVenda).toLocaleDateString('pt-BR')}
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link
-                      to={`/clientes/${v.clienteId}`}
-                      className="font-medium hover:text-primary"
-                    >
+                <div key={v.id} className="px-4 py-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <Link to={`/clientes/${v.clienteId}`} className="font-medium text-sm hover:text-primary">
                       {v.cliente?.nomeCompleto ?? '—'}
                     </Link>
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground">
-                    {v.itens?.length ?? 0} item(s)
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="bg-muted text-xs px-2 py-0.5 rounded">
-                      {PAGAMENTO_LABELS[v.formaPagamento]}
-                      {v.parcelas > 1 && ` ${v.parcelas}x`}
+                    <span className="font-bold text-sm">
+                      R$ {Number(v.valorFinal).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </span>
-                  </td>
-                  <td className="px-4 py-3 text-green-600">
-                    {Number(v.valorDesconto) > 0
-                      ? `- R$ ${Number(v.valorDesconto).toFixed(2)}`
-                      : '—'}
-                  </td>
-                  <td className="px-4 py-3 font-medium">
-                    R$ {Number(v.valorFinal).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                  </td>
-                  <td className="px-4 py-3 text-primary font-medium">
-                    +{v.pontosGerados}
-                  </td>
-                </tr>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{new Date(v.dataVenda).toLocaleDateString('pt-BR')} · {v.itens?.length ?? 0} item(s)</span>
+                    <div className="flex items-center gap-2">
+                      <span className="bg-muted px-1.5 py-0.5 rounded">
+                        {PAGAMENTO_LABELS[v.formaPagamento]}
+                        {v.parcelas > 1 && ` ${v.parcelas}x`}
+                      </span>
+                      <span className="text-primary font-medium">+{v.pontosGerados}pts</span>
+                    </div>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </>
         )}
 
         {data?.totalPages > 1 && (
