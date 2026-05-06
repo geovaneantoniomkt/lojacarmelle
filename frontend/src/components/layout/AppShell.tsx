@@ -1,17 +1,8 @@
 import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard,
-  Users,
-  ShoppingBag,
-  Tag,
-  Megaphone,
-  Filter,
-  BarChart2,
-  LogOut,
-  Store,
-  Menu,
-  X,
+  LayoutDashboard, Users, ShoppingBag, Tag, Megaphone,
+  BarChart2, LogOut, Store, Menu, X, Settings, UserCog,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
 
@@ -21,8 +12,9 @@ const navItems = [
   { to: '/vendas', icon: ShoppingBag, label: 'Vendas' },
   { to: '/campanhas', icon: Megaphone, label: 'Campanhas' },
   { to: '/cupons', icon: Tag, label: 'Cupons' },
-  { to: '/segmentacao', icon: Filter, label: 'Segmentação' },
   { to: '/relatorios', icon: BarChart2, label: 'Relatórios' },
+  { to: '/admin/usuarios', icon: UserCog, label: 'Usuários' },
+  { to: '/configuracoes', icon: Settings, label: 'Configurações' },
 ];
 
 export function AppShell() {
@@ -82,20 +74,14 @@ export function AppShell() {
 
   return (
     <div className="flex h-screen bg-background">
-      {/* Sidebar desktop */}
       <aside className="hidden md:flex w-60 bg-white border-r border-border flex-col shadow-sm">
         <SidebarContent />
       </aside>
 
-      {/* Overlay mobile */}
       {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/40 md:hidden"
-          onClick={closeSidebar}
-        />
+        <div className="fixed inset-0 z-40 bg-black/40 md:hidden" onClick={closeSidebar} />
       )}
 
-      {/* Sidebar mobile (drawer) */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 w-72 bg-white flex flex-col shadow-xl transition-transform duration-300 md:hidden ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -110,9 +96,7 @@ export function AppShell() {
         <SidebarContent />
       </aside>
 
-      {/* Main */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top bar mobile */}
         <header className="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-border shadow-sm">
           <button
             onClick={() => setSidebarOpen(true)}
