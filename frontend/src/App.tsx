@@ -8,6 +8,11 @@ import { ClientePerfil } from '@/pages/Clientes/Perfil';
 import { ClienteCadastro } from '@/pages/Clientes/Cadastro';
 import { HistoricoVendas } from '@/pages/Vendas/HistoricoVendas';
 import { NovaVenda } from '@/pages/Vendas/NovaVenda';
+import { CuponsLista } from '@/pages/Cupons/Lista';
+import { CampanhasLista } from '@/pages/Campanhas/Lista';
+import { AdminUsuarios } from '@/pages/Admin/Usuarios';
+import { Relatorios } from '@/pages/Relatorios';
+import { Configuracoes } from '@/pages/Configuracoes';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const token = useAuthStore((s) => s.token);
@@ -34,6 +39,11 @@ export default function App() {
           <Route path="clientes/:id" element={<ClientePerfil />} />
           <Route path="vendas" element={<HistoricoVendas />} />
           <Route path="vendas/nova" element={<NovaVenda />} />
+          <Route path="cupons" element={<CuponsLista />} />
+          <Route path="campanhas" element={<CampanhasLista />} />
+          <Route path="relatorios" element={<Relatorios />} />
+          <Route path="admin/usuarios" element={<AdminUsuarios />} />
+          <Route path="configuracoes" element={<Configuracoes />} />
         </Route>
       </Routes>
     </BrowserRouter>

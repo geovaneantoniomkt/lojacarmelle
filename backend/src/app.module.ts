@@ -7,6 +7,11 @@ import { UsuariosModule } from './usuarios/usuarios.module';
 import { ClientesModule } from './clientes/clientes.module';
 import { CuponsModule } from './cupons/cupons.module';
 import { VendasModule } from './vendas/vendas.module';
+import { FidelidadeModule } from './fidelidade/fidelidade.module';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { ConfiguracoesModule } from './configuracoes/configuracoes.module';
+import { CampanhasModule } from './campanhas/campanhas.module';
+import { AlertasModule } from './alertas/alertas.module';
 
 @Module({
   imports: [
@@ -23,6 +28,11 @@ import { VendasModule } from './vendas/vendas.module';
     ClientesModule,
     CuponsModule,
     VendasModule,
+    FidelidadeModule,
+    DashboardModule,
+    ConfiguracoesModule,
+    CampanhasModule,
+    AlertasModule,
   ],
 })
 export class AppModule {}
